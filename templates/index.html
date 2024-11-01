@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ELSA Analysis Tool</title>
+</head>
+<body>
+    <h1>ELSA Analysis Tool</h1>
+    <form action="/execute" method="post" enctype="multipart/form-data">
+        <label for="lsa_input">LSA Compute Input:</label>
+        <input type="file" id="lsa_input" name="lsa_input" accept=".txt"><br><br>
+
+        <label for="delaylimit">DELAYLIMIT:</label>
+        <input type="number" id="delaylimit" name="delaylimit" value="1"><br><br>
+
+        <label for="repnum">REPNUM:</label>
+        <input type="number" id="repnum" name="repnum" value="2"><br><br>
+
+        <label for="spotnum">SPOTNUM:</label>
+        <input type="number" id="spotnum" name="spotnum" value="4"><br><br>
+
+        <button type="submit">Execute</button>
+    </form>
+    <div id="result"></div>
+    <a id="download-link" style="display:none;">Download LSA File</a>
+    <script>
+        // 处理异步提交和结果显示
+        const form = document.querySelector("form");
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch("/execute", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+
+            // 显示结果
+            // document.getElementById("result").innerHTML = data.stdout || data.stderr || data.error;
+
+            // 显示下载链接
+            if (data.download_link) {
+                const downloadLink = document.getElementById("download-link");
+                downloadLink.href = data.download_link;
+                downloadLink.style.display = "block";
+            }
+        };
+    </script>
+</body>
+</html>
